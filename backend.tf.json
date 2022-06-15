@@ -1,0 +1,9 @@
+{
+  "terraform": {
+    "backend": {
+      "local": {
+        "path": "/Users/jonas/code/burgerworld/.terraform/terraform.tfstate"
+      }
+    }
+  }
+}
