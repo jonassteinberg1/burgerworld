@@ -15,3 +15,15 @@ variable "team_name" {
   type        = string
   default     = "burgerworld-hello-ecs"
 }
+
+variable "burgerworld_hello_ecs_app_name" {
+  description = "name of the burgerworld-hello-ecs app name"
+  type        = string
+  default     = "burgerworld-hello-ecs"
+}
+
+variable "burgerworld_hello_ecs_deployment_environment" {
+  description = "name of the burgerworld-hello-ecs deployment environment"
+  type        = string
+  default     = "dev"
+}
