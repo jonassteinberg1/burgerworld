@@ -18,5 +18,15 @@ services:
       - 1337:80
     depends_on:
       - web
+  integration-test:
+    build: ./tests/prod/integration/
+    command: pytest
+    volumes:
+      - ./tests/integration/prod:/opt/tests/integration/
+    env_file:
+      - ./.env.test.prod
+    network_mode: host
+    depends_on:
+      - web
 volumes:
   static_volume:

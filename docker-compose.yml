@@ -11,10 +11,10 @@ services:
     env_file:
       - ./.env.dev
   integration-test:
-    build: ./tests/integration/
+    build: ./tests/integration/dev
     command: pytest
     volumes:
-      - ./tests/integration/:/opt/tests/integration/
+      - ./tests/integration/dev:/opt/tests/integration/
     env_file:
       - ./.env.test.dev
     network_mode: host
