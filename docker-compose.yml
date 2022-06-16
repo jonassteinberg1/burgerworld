@@ -10,3 +10,11 @@ services:
       - 5000:5000
     env_file:
       - ./.env.dev
+  integration-test:
+    build: ./tests/integration/
+    command: # python something
+    #volumes:
+    #  - ./services/web/:/usr/src/app/
+    env_file:
+      - ./.env.dev.test
+    network_mode: host
