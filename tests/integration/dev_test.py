@@ -1,16 +1,9 @@
 import pytest
 import requests
 
-from requests.exceptions import ConnectionError
+flask_url = "localhost"
+flask_port = "5000"
 
-def is_responsive(url):
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            return True
-    except ConnectionError:
-        return False
-
-def test_get_root_equals_200():
-     response = requests.get("http://localhost:5000")
+def test_flask_root_returns_200():
+     response = requests.get(f"http://{flask_url}:{flask_port}")
      assert response.status_code == 200
