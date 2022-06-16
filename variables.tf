@@ -16,6 +16,24 @@ variable "team_name" {
   default     = "burgerworld-hello-ecs"
 }
 
+variable "burgerworld_hello_ecs_ecr_symmetric_key_usage" {
+  description = "usage of the burgerworld-hello-ecs kms symmetric key for ecr image encryption"
+  type        = string
+  default     = "ENCRYPT_DECRYPT"
+}
+
+variable "burgerworld_hello_ecs_ecr_symmetric_key_is_enabled" {
+  description = "enable the burgerworld-hello-ecs kms symmetric key for ecr image encryption"
+  type        = string
+  default     = "true"
+}
+
+variable "burgerworld_hello_ecs_ecr_symmetric_key_rotation" {
+  description = "enable kms key rotation for burgerworld-hello-ecs kms symmetric key for ecr image encryption"
+  type        = string
+  default     = "true"
+}
+
 variable "burgerworld_hello_ecs_app_name" {
   description = "name of the burgerworld-hello-ecs app name"
   type        = string

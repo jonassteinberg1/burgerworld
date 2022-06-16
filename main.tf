@@ -10,6 +10,19 @@ module "source_endpoint_label" {
   context    = module.this.context
 }
 
+resource "aws_kms_key" "burgerworld-hello-ecs-ecr-symmetric-key" {
+  description = "symmetric key used for general burgerworld-hello-ecs ecr encryption"
+  key_usage   = var.burgerworld_hello_ecs_ecr_symmetric_key_usage
+  # required by ecr to be SYMMETRIC_DEFAULT
+  customer_master_key_spec = "SYMMETRIC_DEFAULT"
+  is_enabled               = var.burgerworld_hello_ecs_ecr_symmetric_key_is_enabled
+  enable_key_rotation      = var.burgerworld_hello_ecs_ecr_symmetric_key_rotation
+  tags = {
+    creator = "jonassteinberg1@gmail.com"
+    created = "06-16-2022-16-57-31"
+  }
+}
+
 resource "aws_ecr_repository" "burgerworld-hello-ecs-ecr" {
   name                 = "${var.burgerworld_hello_ecs_app_name}-${var.burgerworld_hello_ecs_deployment_environment}-ecr"
   image_tag_mutability = "IMMUTABLE"
