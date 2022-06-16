@@ -1,4 +1,5 @@
 variable "team_name" {
-  type = string
-  default = "burgerworld"
+  description = "name of the team administrating and deploying services to the cluster"
+  type        = string
+  default     = "burgerworld"
 }

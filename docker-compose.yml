@@ -18,5 +18,5 @@ services:
     env_file:
       - ./.env.test.dev
     network_mode: host
-    depends_on: 
+    depends_on:
       - web
