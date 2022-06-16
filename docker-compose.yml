@@ -12,9 +12,11 @@ services:
       - ./.env.dev
   integration-test:
     build: ./tests/integration/
-    command: # python something
-    #volumes:
-    #  - ./services/web/:/usr/src/app/
+    command: pytest > pytests-integration-dev.log
+    volumes:
+      - ./tests/integration/:/opt/tests/integration/
     env_file:
       - ./.env.dev.test
     network_mode: host
+    depends_on: 
+      - web

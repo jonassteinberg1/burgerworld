@@ -1,9 +1,7 @@
 import pytest
+import os
 import requests
 
-flask_url = "localhost"
-flask_port = "5000"
-
 def test_flask_root_returns_200():
-     response = requests.get(f"http://{flask_url}:{flask_port}")
+     response = requests.get(f"http://{'FLASK_URL'}:{'FLASK_PORT'}")
      assert response.status_code == 200
