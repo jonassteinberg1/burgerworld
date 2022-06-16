@@ -2,6 +2,6 @@
 
 enabled = true
 
-namespace = "burgerworld"
+namespace = "burgerworld-hello-ecs"
 
 name = ""
