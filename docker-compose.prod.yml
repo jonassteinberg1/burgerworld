@@ -19,7 +19,7 @@ services:
     depends_on:
       - web
   integration-test:
-    build: ./tests/prod/integration/
+    build: ./tests/integration/prod
     command: pytest
     volumes:
       - ./tests/integration/prod:/opt/tests/integration/
