@@ -70,7 +70,7 @@ resource "aws_ecr_registry_policy" "burgerworld-hello-ecs-ecr-permissions-policy
           "AWS" : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/admin"
         },
         Action = [
-          "ecr:ReplicateImage"
+          "ecr:*"
         ],
         Resource = [
           "arn:${data.aws_partition.current.partition}:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:burgerworld-hello-ecs-dev-ecr/*"
