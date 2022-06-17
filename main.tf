@@ -1,3 +1,13 @@
+terraform {
+  cloud {
+    organization = "jonassteinberg"
+
+    workspaces {
+      name = "burgerworld-hello-ecs"
+    }
+  }
+}
+
 locals {
   enabled = module.this.enabled
 }
