@@ -20,6 +20,10 @@ module "source_endpoint_label" {
   context    = module.this.context
 }
 
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+data "aws_partition" "current" {}
+
 resource "aws_kms_key" "burgerworld-hello-ecs-ecr-symmetric-key" {
 
   description = "symmetric key used for general burgerworld-hello-ecs ecr encryption"
@@ -53,4 +57,25 @@ resource "aws_ecr_repository" "burgerworld-hello-ecs-ecr" {
     Name        = "${var.burgerworld_hello_ecs_app_name}-${var.burgerworld_hello_ecs_deployment_environment}-ecr"
     Environment = var.burgerworld_hello_ecs_deployment_environment
   }
+}
+
+resource "aws_ecr_registry_policy" "burgerworld-hello-ecs-ecr-permissions-policy" {
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "burgerworld-hello-ecs-ecr-permissions-policy",
+        Effect = "Allow",
+        Principal = {
+          "AWS" : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/admin"
+        },
+        Action = [
+          "ecr:ReplicateImage"
+        ],
+        Resource = [
+          "arn:${data.aws_partition.current.partition}:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:burgerworld-hello-ecs-dev-ecr/*"
+        ]
+      }
+    ]
+  })
 }
