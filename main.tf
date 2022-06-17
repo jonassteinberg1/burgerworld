@@ -21,6 +21,7 @@ module "source_endpoint_label" {
 }
 
 resource "aws_kms_key" "burgerworld-hello-ecs-ecr-symmetric-key" {
+
   description = "symmetric key used for general burgerworld-hello-ecs ecr encryption"
   key_usage   = var.burgerworld_hello_ecs_ecr_symmetric_key_usage
   # required by ecr to be SYMMETRIC_DEFAULT
@@ -33,6 +34,11 @@ resource "aws_kms_key" "burgerworld-hello-ecs-ecr-symmetric-key" {
   }
 }
 
+resource "aws_kms_alias" "burgerworld-hello-ecs-ecr-symmetric-key-alias" {
+  name          = "alias/${var.burgerworld-hello-ecs-ecr-symmetric-key-alias}"
+  target_key_id = aws_kms_key.burgerworld-hello-ecs-ecr-symmetric-key.key_id
+}
+
 resource "aws_ecr_repository" "burgerworld-hello-ecs-ecr" {
   name                 = "${var.burgerworld_hello_ecs_app_name}-${var.burgerworld_hello_ecs_deployment_environment}-ecr"
   image_tag_mutability = "IMMUTABLE"
@@ -41,7 +47,7 @@ resource "aws_ecr_repository" "burgerworld-hello-ecs-ecr" {
   }
   encryption_configuration {
     encryption_type = var.burgerworld_hello_ecs_encryption_type
-    kms_key         = var.burgerworld_hello_ecs_kms_key_arn
+    kms_key         = aws_kms_key.burgerworld-hello-ecs-ecr-symmetric-key.arn
   }
   tags = {
     Name        = "${var.burgerworld_hello_ecs_app_name}-${var.burgerworld_hello_ecs_deployment_environment}-ecr"
