@@ -43,8 +43,8 @@ resource "aws_kms_alias" "burgerworld-hello-ecs-ecr-symmetric-key-alias" {
   target_key_id = aws_kms_key.burgerworld-hello-ecs-ecr-symmetric-key.key_id
 }
 
-resource "aws_ecr_repository" "burgerworld-hello-ecs-integration-test" {
-  name                 = "${var.burgerworld_hello_ecs_app_name}-integration-test"
+resource "aws_ecr_repository" "burgerworld-hello-ecs-integration-test-local" {
+  name                 = "${var.burgerworld_hello_ecs_app_name}-integration-test-local"
   image_tag_mutability = "IMMUTABLE"
   image_scanning_configuration {
     scan_on_push = true
@@ -54,7 +54,22 @@ resource "aws_ecr_repository" "burgerworld-hello-ecs-integration-test" {
     kms_key         = aws_kms_key.burgerworld-hello-ecs-ecr-symmetric-key.arn
   }
   tags = {
-    Name = "${var.burgerworld_hello_ecs_app_name}-integration-test"
+    Name = "${var.burgerworld_hello_ecs_app_name}-integration-test-local"
+  }
+}
+
+resource "aws_ecr_repository" "burgerworld-hello-ecs-web-local" {
+  name                 = "${var.burgerworld_hello_ecs_app_name}-web-local"
+  image_tag_mutability = "IMMUTABLE"
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+  encryption_configuration {
+    encryption_type = var.burgerworld_hello_ecs_encryption_type
+    kms_key         = aws_kms_key.burgerworld-hello-ecs-ecr-symmetric-key.arn
+  }
+  tags = {
+    Name = "${var.burgerworld_hello_ecs_app_name}-web"
   }
 }
 
@@ -70,6 +85,36 @@ resource "aws_ecr_repository" "burgerworld-hello-ecs-web" {
   }
   tags = {
     Name = "${var.burgerworld_hello_ecs_app_name}-web"
+  }
+}
+
+resource "aws_ecr_repository" "burgerworld-hello-ecs-nginx" {
+  name                 = "${var.burgerworld_hello_ecs_app_name}-nginx"
+  image_tag_mutability = "IMMUTABLE"
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+  encryption_configuration {
+    encryption_type = var.burgerworld_hello_ecs_encryption_type
+    kms_key         = aws_kms_key.burgerworld-hello-ecs-ecr-symmetric-key.arn
+  }
+  tags = {
+    Name = "${var.burgerworld_hello_ecs_app_name}-nginx"
+  }
+}
+
+resource "aws_ecr_repository" "burgerworld-hello-ecs-integration-test" {
+  name                 = "${var.burgerworld_hello_ecs_app_name}-integration-test"
+  image_tag_mutability = "IMMUTABLE"
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+  encryption_configuration {
+    encryption_type = var.burgerworld_hello_ecs_encryption_type
+    kms_key         = aws_kms_key.burgerworld-hello-ecs-ecr-symmetric-key.arn
+  }
+  tags = {
+    Name = "${var.burgerworld_hello_ecs_app_name}-integration-test"
   }
 }
 
@@ -93,6 +138,7 @@ resource "aws_ecr_registry_policy" "burgerworld-hello-ecs-ecr-permissions-policy
     ]
   })
 }
+
 
 data "aws_iam_policy_document" "burgerworld-hello-ecs-ecr-permissions-policy-document" {
   statement {
@@ -128,5 +174,18 @@ resource "aws_ecr_repository_policy" "burgerworld-hello-ecs-integration-test-rep
 
 resource "aws_ecr_repository_policy" "burgerworld-hello-ecs-web-repository-policy" {
   repository = aws_ecr_repository.burgerworld-hello-ecs-web.name
+  policy     = data.aws_iam_policy_document.burgerworld-hello-ecs-ecr-permissions-policy-document.json
+}
+
+resource "aws_ecr_repository_policy" "burgerworld-hello-ecs-web-local-repository-policy" {
+  repository = aws_ecr_repository.burgerworld-hello-ecs-web-local.name
+  policy     = data.aws_iam_policy_document.burgerworld-hello-ecs-ecr-permissions-policy-document.json
+}
+resource "aws_ecr_repository_policy" "burgerworld-hello-ecs-nginx-repository-policy" {
+  repository = aws_ecr_repository.burgerworld-hello-ecs-nginx.name
+  policy     = data.aws_iam_policy_document.burgerworld-hello-ecs-ecr-permissions-policy-document.json
+}
+resource "aws_ecr_repository_policy" "burgerworld-hello-ecs-integration-test-local-repository-policy" {
+  repository = aws_ecr_repository.burgerworld-hello-ecs-integration-test-local.name
   policy     = data.aws_iam_policy_document.burgerworld-hello-ecs-ecr-permissions-policy-document.json
 }
