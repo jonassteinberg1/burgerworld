@@ -227,3 +227,36 @@ resource "aws_iam_instance_profile" "ecs-agent" {
   name = "ecs-agent"
   role = aws_iam_role.ecs-agent.name
 }
+
+######
+# SG #
+######
+
+resource "aws_security_group" "ecs-sg" {
+  vpc_id      = var.burgerworld_hello_ecs_vpc_id
+  description = "main ecs security group"
+
+  ingress {
+    description = "ssh access"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["72.50.221.50/32"]
+  }
+
+  ingress {
+    description = "nginx public port"
+    from_port   = 1337
+    to_port     = 1337
+    protocol    = "tcp"
+    cidr_blocks = ["72.50.221.50/32"]
+  }
+
+  egress {
+    description = "full egress"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["72.50.221.50/32", "172.31.0.0/16"]
+  }
+}

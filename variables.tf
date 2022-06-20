@@ -57,3 +57,9 @@ variable "burgerworld_hello_ecs_encryption_type" {
   type        = string
   default     = "KMS"
 }
+
+variable "burgerworld_hello_ecs_vpc_id" {
+  description = "vpc id of burgerworld-hello-ecs vpc"
+  type        = string
+  default     = "vpc-ff04929b"
+}
