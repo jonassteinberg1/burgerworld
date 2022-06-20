@@ -201,27 +201,29 @@ resource "aws_ecr_repository_policy" "burgerworld-hello-ecs-integration-test-loc
   policy     = data.aws_iam_policy_document.burgerworld-hello-ecs-ecr-permissions-policy-document.json
 }
 
-resource "aws_iam_role" "ecs-task-execution-role" {
-  name               = "${var.burgerworld_hello_ecs_app_name}-execution-task-role"
-  assume_role_policy = data.aws_iam_policy_document.assume-role-policy.json
-  tags = {
-    Name        = "${var.burgerworld_hello_ecs_app_name}-iam-role"
-    Environment = var.burgerworld_hello_ecs_deployment_environment
-  }
-}
-
-data "aws_iam_policy_document" "assume-role-policy" {
+data "aws_iam_policy_document" "ecs-agent" {
   statement {
     actions = ["sts:AssumeRole"]
 
     principals {
       type        = "Service"
-      identifiers = ["ecs-tasks.amazonaws.com"]
+      identifiers = ["ec2.amazonaws.com"]
     }
   }
 }
 
-resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy" {
-  role       = aws_iam_role.ecs-task-execution-role.name
+resource "aws_iam_role" "ecs-agent" {
+  name               = "ecs-agent"
+  assume_role_policy = data.aws_iam_policy_document.ecs-agent.json
+}
+
+
+resource "aws_iam_role_policy_attachment" "ecs-agent" {
+  role       = "aws_iam_role.ecs-agent.name"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_instance_profile" "ecs-agent" {
+  name = "ecs-agent"
+  role = aws_iam_role.ecs-agent.name
 }
