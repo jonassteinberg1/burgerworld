@@ -201,27 +201,62 @@ resource "aws_ecr_repository_policy" "burgerworld-hello-ecs-integration-test-loc
   policy     = data.aws_iam_policy_document.burgerworld-hello-ecs-ecr-permissions-policy-document.json
 }
 
-resource "aws_iam_role" "ecs-task-execution-role" {
-  name               = "${var.burgerworld_hello_ecs_app_name}-execution-task-role"
-  assume_role_policy = data.aws_iam_policy_document.assume-role-policy.json
-  tags = {
-    Name        = "${var.burgerworld_hello_ecs_app_name}-iam-role"
-    Environment = var.burgerworld_hello_ecs_deployment_environment
-  }
-}
-
-data "aws_iam_policy_document" "assume-role-policy" {
+data "aws_iam_policy_document" "ecs-agent" {
   statement {
     actions = ["sts:AssumeRole"]
 
     principals {
       type        = "Service"
-      identifiers = ["ecs-tasks.amazonaws.com"]
+      identifiers = ["ec2.amazonaws.com"]
     }
   }
 }
 
-resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy" {
-  role       = aws_iam_role.ecs-task-execution-role.name
+resource "aws_iam_role" "ecs-agent" {
+  name               = "ecs-agent"
+  assume_role_policy = data.aws_iam_policy_document.ecs-agent.json
+}
+
+
+resource "aws_iam_role_policy_attachment" "ecs-agent" {
+  role       = "aws_iam_role.ecs-agent.name"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
+}
+
+resource "aws_iam_instance_profile" "ecs-agent" {
+  name = "ecs-agent"
+  role = aws_iam_role.ecs-agent.name
+}
+
+######
+# SG #
+######
+
+resource "aws_security_group" "ecs-sg" {
+  vpc_id      = var.burgerworld_hello_ecs_vpc_id
+  description = "main ecs security group"
+
+  ingress {
+    description = "ssh access"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["72.50.221.50/32"]
+  }
+
+  ingress {
+    description = "nginx public port"
+    from_port   = 1337
+    to_port     = 1337
+    protocol    = "tcp"
+    cidr_blocks = ["72.50.221.50/32"]
+  }
+
+  egress {
+    description = "full egress"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["72.50.221.50/32", "172.31.0.0/16"]
+  }
 }
