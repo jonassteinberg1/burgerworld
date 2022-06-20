@@ -24,6 +24,10 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 data "aws_partition" "current" {}
 
+#######
+# KMS #
+#######
+
 resource "aws_kms_key" "burgerworld-hello-ecs-ecr-symmetric-key" {
 
   description = "symmetric key used for general burgerworld-hello-ecs ecr encryption"
@@ -42,6 +46,10 @@ resource "aws_kms_alias" "burgerworld-hello-ecs-ecr-symmetric-key-alias" {
   name          = "alias/${var.burgerworld-hello-ecs-ecr-symmetric-key-alias}"
   target_key_id = aws_kms_key.burgerworld-hello-ecs-ecr-symmetric-key.key_id
 }
+
+#######
+# ECR #
+#######
 
 resource "aws_ecr_repository" "burgerworld-hello-ecs-integration-test-local" {
   name                 = "${var.burgerworld_hello_ecs_app_name}-integration-test-local"
@@ -139,6 +147,9 @@ resource "aws_ecr_registry_policy" "burgerworld-hello-ecs-ecr-permissions-policy
   })
 }
 
+#######
+# IAM #
+#######
 
 data "aws_iam_policy_document" "burgerworld-hello-ecs-ecr-permissions-policy-document" {
   statement {
