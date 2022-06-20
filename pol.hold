@@ -1,0 +1,38 @@
+{
+  "Sid": "burgerworld-hello-ecs-ecr-permissions-policy",
+  "Effect": "Allow",
+  "Principal": {
+    "AWS": "arn:aws:iam::379683964026:user/admin"
+  },
+  "Action": "ecr:*",
+  "Resource": "arn:aws:ecr:us-east-1:379683964026/*"
+}
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "burgerworld-hello-ecs-ecr-permissions-policy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::379683964026:user/admin"
+      },
+      "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:BatchDeleteImage",
+        "ecr:BatchGetImage",
+        "ecr:CompleteLayerUpload",
+        "ecr:DeleteRepository",
+        "ecr:DeleteRepositoryPolicy",
+        "ecr:DescribeRepositories",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:GetRepositoryPolicy",
+        "ecr:InitiateLayerUpload",
+        "ecr:ListImages",
+        "ecr:PutImage",
+        "ecr:SetRepositoryPolicy",
+        "ecr:UploadLayerPart"
+      ]
+    }
+  ]
+}
