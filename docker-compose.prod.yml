@@ -1,5 +1,6 @@
 services:
   web:
+    image: burgerworld-hello-ecs-web:1.0.0
     build:
       context: ./services/web
       dockerfile: Dockerfile.prod
@@ -11,7 +12,10 @@ services:
     env_file:
       - ./.env.prod
   nginx:
-    build: ./services/nginx
+    image: burgerworld-hello-ecs-nginx:1.0.0
+    build:
+      context: ./services/nginx
+      dockerfile: Dockerfile
     volumes:
       - static_volume:/home/app/web/project/static
     ports:
@@ -19,7 +23,10 @@ services:
     depends_on:
       - web
   integration-test:
-    build: ./tests/integration/prod
+    image: burgerworld-hello-ecs-integration-test-prod:1.0.0
+    build:
+      context: ./tests/integration/prod
+      dockerfile: Dockerfile
     command: pytest
     volumes:
       - ./tests/integration/prod:/opt/tests/integration/
