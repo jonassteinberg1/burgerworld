@@ -59,26 +59,26 @@ resource "aws_ecr_repository" "burgerworld-hello-ecs-ecr" {
   }
 }
 
-#resource "aws_ecr_registry_policy" "burgerworld-hello-ecs-ecr-permissions-policy" {
-#  policy = jsonencode({
-#    Version = "2012-10-17",
-#    Statement = [
-#      {
-#        Sid    = "burgerworld-hello-ecs-ecr-permissions-policy",
-#        Effect = "Allow",
-#        Principal = {
-#          "AWS" : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/admin"
-#        },
-#        Action = [
-#          "ecr:*"
-#        ],
-#        Resource = [
-#          "arn:${data.aws_partition.current.partition}:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:burgerworld-hello-ecs-dev-ecr/*"
-#        ]
-#      }
-#    ]
-#  })
-#}
+resource "aws_ecr_registry_policy" "burgerworld-hello-ecs-ecr-permissions-policy" {
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "burgerworld-hello-ecs-ecr-permissions-policy",
+        Effect = "Allow",
+        Principal = {
+          "AWS" : "arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/admin"
+        },
+        Action = [
+          "ecr:*"
+        ],
+        Resource = [
+          "arn:${data.aws_partition.current.partition}:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}/*"
+        ]
+      }
+    ]
+  })
+}
 
 data "aws_iam_policy_document" "burgerworld-hello-ecs-ecr-permissions-policy-document" {
   statement {
@@ -88,7 +88,6 @@ data "aws_iam_policy_document" "burgerworld-hello-ecs-ecr-permissions-policy-doc
       type        = "AWS"
       identifiers = ["arn:${data.aws_partition.current.partition}:iam::${data.aws_caller_identity.current.account_id}:user/admin"]
     }
-    resources = ["arn:${data.aws_partition.current.partition}:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:burgerworld-hello-ecs-dev-ecr/*"]
     actions = [
       "ecr:GetDownloadUrlForLayer",
       "ecr:BatchGetImage",
