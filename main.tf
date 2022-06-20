@@ -43,8 +43,8 @@ resource "aws_kms_alias" "burgerworld-hello-ecs-ecr-symmetric-key-alias" {
   target_key_id = aws_kms_key.burgerworld-hello-ecs-ecr-symmetric-key.key_id
 }
 
-resource "aws_ecr_repository" "burgerworld-hello-ecs-ecr" {
-  name                 = "${var.burgerworld_hello_ecs_app_name}-${var.burgerworld_hello_ecs_deployment_environment}-ecr"
+resource "aws_ecr_repository" "burgerworld-hello-ecs-integration-test" {
+  name                 = "${var.burgerworld_hello_ecs_app_name}-integration-test"
   image_tag_mutability = "IMMUTABLE"
   image_scanning_configuration {
     scan_on_push = true
@@ -54,8 +54,22 @@ resource "aws_ecr_repository" "burgerworld-hello-ecs-ecr" {
     kms_key         = aws_kms_key.burgerworld-hello-ecs-ecr-symmetric-key.arn
   }
   tags = {
-    Name        = "${var.burgerworld_hello_ecs_app_name}-${var.burgerworld_hello_ecs_deployment_environment}-ecr"
-    Environment = var.burgerworld_hello_ecs_deployment_environment
+    Name = "${var.burgerworld_hello_ecs_app_name}-integration-test"
+  }
+}
+
+resource "aws_ecr_repository" "burgerworld-hello-ecs-web" {
+  name                 = "${var.burgerworld_hello_ecs_app_name}-web"
+  image_tag_mutability = "IMMUTABLE"
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+  encryption_configuration {
+    encryption_type = var.burgerworld_hello_ecs_encryption_type
+    kms_key         = aws_kms_key.burgerworld-hello-ecs-ecr-symmetric-key.arn
+  }
+  tags = {
+    Name = "${var.burgerworld_hello_ecs_app_name}-web"
   }
 }
 
@@ -107,7 +121,12 @@ data "aws_iam_policy_document" "burgerworld-hello-ecs-ecr-permissions-policy-doc
   }
 }
 
-resource "aws_ecr_repository_policy" "burgerworld-hello-ecs-ecr-repository-policy" {
-  repository = aws_ecr_repository.burgerworld-hello-ecs-ecr.name
+resource "aws_ecr_repository_policy" "burgerworld-hello-ecs-integration-test-repository-policy" {
+  repository = aws_ecr_repository.burgerworld-hello-ecs-integration-test.name
+  policy     = data.aws_iam_policy_document.burgerworld-hello-ecs-ecr-permissions-policy-document.json
+}
+
+resource "aws_ecr_repository_policy" "burgerworld-hello-ecs-web-repository-policy" {
+  repository = aws_ecr_repository.burgerworld-hello-ecs-web.name
   policy     = data.aws_iam_policy_document.burgerworld-hello-ecs-ecr-permissions-policy-document.json
 }
