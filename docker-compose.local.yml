@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  web:
+    image: burgerworld-hello-ecs-web-local:1.0.2
+    build:
+      context: ./services/web
+      dockerfile: Dockerfile.local
+    command: python manage.py run -h 0.0.0.0
+    volumes:
+      - ./services/web/:/usr/src/app/
+    ports:
+      - 5000:5000
+    env_file:
+      - ./.env.dev
+  integration-test-local:
+    image: burgerworld-hello-ecs-integration-test-local:1.0.0
+    build:
+      context: ./tests/integration/local
+      dockerfile: Dockerfile
+    command: pytest
+    volumes:
+      - ./tests/integration/local:/opt/tests/integration/
+    env_file:
+      - ./.env.test.local
+    network_mode: host
+    depends_on:
+      - web

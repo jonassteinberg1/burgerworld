@@ -1,24 +1,39 @@
-version: '3.8'
-
 services:
   web:
-    image: burgerworld-hello-ecs-web:1.0.0
-    build: ./services/web
-    command: python manage.py run -h 0.0.0.0
+    image: burgerworld-hello-ecs-web:1.0.2
+    build:
+      context: ./services/web
+      dockerfile: Dockerfile
+    command: gunicorn --bind 0.0.0.0:5000 manage:app
     volumes:
-      - ./services/web/:/usr/src/app/
-    ports:
-      - 5000:5000
+      - static_volume:/home/app/web/project/static
+    expose:
+      - 5000
     env_file:
-      - ./.env.dev
+      - ./.env.prod
+  nginx:
+    image: burgerworld-hello-ecs-nginx:1.0.0
+    build:
+      context: ./services/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - static_volume:/home/app/web/project/static
+    ports:
+      - 1337:80
+    depends_on:
+      - web
   integration-test:
     image: burgerworld-hello-ecs-integration-test:1.0.0
-    build: ./tests/integration/dev
+    build:
+      context: ./tests/integration/prod
+      dockerfile: Dockerfile
     command: pytest
     volumes:
-      - ./tests/integration/dev:/opt/tests/integration/
+      - ./tests/integration/prod:/opt/tests/integration/
     env_file:
-      - ./.env.test.dev
+      - ./.env.test.prod
     network_mode: host
     depends_on:
       - web
+volumes:
+  static_volume:
