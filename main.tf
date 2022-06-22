@@ -237,14 +237,6 @@ resource "aws_security_group" "ecs-sg" {
   description = "main ecs security group"
 
   ingress {
-    description = "ssh access"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["72.50.221.50/32"]
-  }
-
-  ingress {
     description = "nginx public port"
     from_port   = 1337
     to_port     = 1337
@@ -259,4 +251,102 @@ resource "aws_security_group" "ecs-sg" {
     protocol    = "tcp"
     cidr_blocks = ["72.50.221.50/32", "172.31.0.0/16"]
   }
+}
+
+#######
+# ASG #
+#######
+resource "aws_launch_configuration" "ecs_launch_config" {
+  image_id             = "ami-0f863d7367abe5d6f"
+  iam_instance_profile = aws_iam_instance_profile.ecs-agent.name
+  security_groups      = [aws_security_group.ecs-sg.id]
+  user_data            = "#!/bin/bash\necho ECS_CLUSTER=burgerworld-hell-ecs-ecs-cluster >> /etc/ecs/ecs.config"
+  instance_type        = "t2.micro"
+
+  root_block_device {
+    volume_type           = "standard"
+    volume_size           = "20"
+    delete_on_termination = "true"
+    encrypted             = "true"
+  }
+
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_autoscaling_group" "failure_analysis_ecs_asg" {
+  name                      = "${var.burgerworld_hello_ecs_app_name}-${var.burgerworld_hello_ecs_deployment_environment}-ecs-cluster"
+  vpc_zone_identifier       = var.burgerworld-hello-ecs-autoscaling-group-vpc-zone-identifier
+  launch_configuration      = aws_launch_configuration.ecs_launch_config.name
+  desired_capacity          = 2
+  min_size                  = 1
+  max_size                  = 10
+  health_check_grace_period = 300
+  health_check_type         = "EC2"
+}
+
+#######
+# ECS #
+#######
+
+resource "aws_ecs_cluster" "burgerworld-hello-ecs-ecs-cluster" {
+  name = "${var.burgerworld_hello_ecs_app_name}-cluster"
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+  tags = {
+    Name        = "${var.burgerworld_hello_ecs_app_name}-ecs-cluster"
+    Environment = var.burgerworld_hello_ecs_deployment_environment
+  }
+}
+
+#######
+# ALB #
+#######
+
+resource "aws_lb" "loadbalancer" {
+  load_balancer_type         = var.burgerworld-hello-ecs-loadbalancer-type
+  internal                   = "false" # tfsec:ignore:aws-elb-alb-not-public
+  name                       = "${var.burgerworld_hello_ecs_app_name}-ecs-cluster"
+  subnets                    = var.burgerworld-hello-ecs-alb-subnets
+  security_groups            = [aws_security_group.ecs-sg.id]
+  drop_invalid_header_fields = "true"
+}
+
+
+resource "aws_lb_target_group" "lb_target_group" {
+  name        = "openapi-target-alb-name"
+  port        = "80"
+  protocol    = "HTTP"
+  vpc_id      = "vpc-000851116d62e0c13" # CHNAGE THIS
+  target_type = "ip"
+
+
+  #STEP 1 - ECS task Running
+  health_check {
+    healthy_threshold   = "3"
+    interval            = "10"
+    port                = "1337"
+    path                = "/static/hello.txt"
+    protocol            = "TCP"
+    unhealthy_threshold = "3"
+  }
+}
+
+resource "aws_lb_listener" "lb_listener" {
+  default_action {
+    target_group_arn = aws_lb_target_group.lb_target_group.id
+    type             = "forward"
+  }
+
+  #certificate_arn   = "arn:aws:acm:us-east-1:689019322137:certificate/9fcdad0a-7350-476c-b7bd-3a530cf03090"
+  load_balancer_arn = aws_lb.loadbalancer.arn
+  port              = "1337"
+  protocol          = "HTTPS"
 }
