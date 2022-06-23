@@ -322,7 +322,7 @@ resource "aws_lb" "burgerworld-hello-ecs-loadbalancer" {
 resource "aws_lb_target_group" "burgerworld-hello-ecs-lb-target-group" {
   name        = "burgerworld-hello-ecs"
   port        = "1337"
-  protocol    = "TCP"
+  protocol    = "HTTP"
   vpc_id      = "vpc-ff04929b"
   target_type = "ip"
 
@@ -330,7 +330,8 @@ resource "aws_lb_target_group" "burgerworld-hello-ecs-lb-target-group" {
     healthy_threshold   = "3"
     interval            = "10"
     port                = "1337"
-    protocol            = "TCP"
+    protocol            = "HTTP"
+    path                = "/"
     unhealthy_threshold = "3"
   }
 }
