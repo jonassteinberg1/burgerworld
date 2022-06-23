@@ -256,7 +256,7 @@ resource "aws_security_group" "ecs-sg" {
 #######
 # ASG #
 #######
-resource "aws_launch_configuration" "ecs_launch_config" {
+resource "aws_launch_configuration" "burgerworld-hello-ecs-launch-configuration" {
   image_id             = "ami-0f863d7367abe5d6f"
   iam_instance_profile = aws_iam_instance_profile.ecs-agent.name
   security_groups      = [aws_security_group.ecs-sg.id]
@@ -279,10 +279,10 @@ resource "aws_launch_configuration" "ecs_launch_config" {
   }
 }
 
-resource "aws_autoscaling_group" "failure_analysis_ecs_asg" {
+resource "aws_autoscaling_group" "burgerworld-hello-ecs-asg" {
   name                      = "${var.burgerworld_hello_ecs_app_name}-${var.burgerworld_hello_ecs_deployment_environment}-ecs-cluster"
   vpc_zone_identifier       = var.burgerworld-hello-ecs-autoscaling-group-vpc-zone-identifier
-  launch_configuration      = aws_launch_configuration.ecs_launch_config.name
+  launch_configuration      = aws_launch_configuration.burgerworld-hello-ecs-launch-configuration.name
   desired_capacity          = 2
   min_size                  = 1
   max_size                  = 10
@@ -310,7 +310,7 @@ resource "aws_ecs_cluster" "burgerworld-hello-ecs-ecs-cluster" {
 # ALB #
 #######
 
-resource "aws_lb" "loadbalancer" {
+resource "aws_lb" "burgerworld-hello-ecs-loadbalancer" {
   load_balancer_type         = var.burgerworld-hello-ecs-loadbalancer-type
   internal                   = "false" # tfsec:ignore:aws-elb-alb-not-public
   name                       = "${var.burgerworld_hello_ecs_app_name}-cluster"
@@ -319,7 +319,7 @@ resource "aws_lb" "loadbalancer" {
   drop_invalid_header_fields = "true"
 }
 
-resource "aws_lb_target_group" "lb_target_group" {
+resource "aws_lb_target_group" "burgerworld-hello-ecs-lb-target-group" {
   name        = "burgerworld-hello-ecs"
   port        = "1337"
   protocol    = "TCP"
@@ -335,14 +335,14 @@ resource "aws_lb_target_group" "lb_target_group" {
   }
 }
 
-resource "aws_lb_listener" "lb_listener" {
+resource "aws_lb_listener" "burgerworld-hello-ecs-alb-listener" {
 
   default_action {
-    target_group_arn = aws_lb_target_group.lb_target_group.id
+    target_group_arn = aws_lb_target_group.burgerworld-hello-ecs-lb-target-group.id
     type             = "forward"
   }
 
-  load_balancer_arn = aws_lb.loadbalancer.arn
+  load_balancer_arn = aws_lb.burgerworld-hello-ecs-loadbalancer.arn
   port              = "1337"
   protocol          = "TCP"
 }
