@@ -322,7 +322,7 @@ resource "aws_lb" "loadbalancer" {
 resource "aws_lb_target_group" "lb_target_group" {
   name        = "burgerworld-hello-ecs"
   port        = "1337"
-  protocol    = "HTTPS"
+  protocol    = "TCP"
   vpc_id      = "vpc-ff04929b"
   target_type = "ip"
 
@@ -336,13 +336,13 @@ resource "aws_lb_target_group" "lb_target_group" {
 }
 
 resource "aws_lb_listener" "lb_listener" {
+
   default_action {
     target_group_arn = aws_lb_target_group.lb_target_group.id
     type             = "forward"
   }
 
-  certificate_arn   = "arn:aws:acm:us-east-1:379683964026:certificate/f6dc2998-af1b-41e8-87a6-b4b2c4d6a0d8"
   load_balancer_arn = aws_lb.loadbalancer.arn
   port              = "1337"
-  protocol          = "HTTPS"
+  protocol          = "TCP"
 }
