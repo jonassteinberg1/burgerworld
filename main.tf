@@ -352,7 +352,7 @@ resource "aws_ecs_service" "burgerworld-hello-ecs-service" {
   }
 
   network_configuration {
-    security_groups  = aws_security_group.ecs-sg.id
+    security_groups  = [aws_security_group.ecs-sg.id]
     subnets          = var.burgerworld-hello-ecs-alb-subnets
     assign_public_ip = "false"
   }
