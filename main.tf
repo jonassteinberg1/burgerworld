@@ -313,27 +313,23 @@ resource "aws_ecs_cluster" "burgerworld-hello-ecs-ecs-cluster" {
 resource "aws_lb" "loadbalancer" {
   load_balancer_type         = var.burgerworld-hello-ecs-loadbalancer-type
   internal                   = "false" # tfsec:ignore:aws-elb-alb-not-public
-  name                       = "${var.burgerworld_hello_ecs_app_name}-ecs-cluster"
+  name                       = "${var.burgerworld_hello_ecs_app_name}-cluster"
   subnets                    = var.burgerworld-hello-ecs-alb-subnets
   security_groups            = [aws_security_group.ecs-sg.id]
   drop_invalid_header_fields = "true"
 }
 
-
 resource "aws_lb_target_group" "lb_target_group" {
-  name        = "openapi-target-alb-name"
-  port        = "80"
-  protocol    = "HTTP"
-  vpc_id      = "vpc-000851116d62e0c13" # CHNAGE THIS
+  name        = "burgerworld-hello-ecs"
+  port        = "1337"
+  protocol    = "HTTPS"
+  vpc_id      = "vpc-ff04929b"
   target_type = "ip"
 
-
-  #STEP 1 - ECS task Running
   health_check {
     healthy_threshold   = "3"
     interval            = "10"
     port                = "1337"
-    path                = "/static/hello.txt"
     protocol            = "TCP"
     unhealthy_threshold = "3"
   }
@@ -345,7 +341,7 @@ resource "aws_lb_listener" "lb_listener" {
     type             = "forward"
   }
 
-  #certificate_arn   = "arn:aws:acm:us-east-1:689019322137:certificate/9fcdad0a-7350-476c-b7bd-3a530cf03090"
+  certificate_arn   = "arn:aws:acm:us-east-1:379683964026:certificate/f6dc2998-af1b-41e8-87a6-b4b2c4d6a0d8"
   load_balancer_arn = aws_lb.loadbalancer.arn
   port              = "1337"
   protocol          = "HTTPS"
