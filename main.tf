@@ -217,7 +217,6 @@ resource "aws_iam_role" "ecs-agent" {
   assume_role_policy = data.aws_iam_policy_document.ecs-agent.json
 }
 
-
 resource "aws_iam_role_policy_attachment" "ecs-agent" {
   role       = aws_iam_role.ecs-agent.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
@@ -226,6 +225,26 @@ resource "aws_iam_role_policy_attachment" "ecs-agent" {
 resource "aws_iam_instance_profile" "ecs-agent" {
   name = "ecs-agent"
   role = aws_iam_role.ecs-agent.name
+}
+
+resource "aws_iam_role" "burgerworld-hello-ecs-service-role" {
+  name               = "burgerworld-hello-ecs-service-role"
+  assume_role_policy = data.aws_iam_policy_document.burgerworld-hello-ecs-service-policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "burgerworld-hello-ecs-service-role-attachment" {
+  role       = aws_iam_role.burgerworld-hello-ecs-service-role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole"
+}
+
+data "aws_iam_policy_document" "burgerworld-hello-ecs-service-policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ecs.amazonaws.com"]
+    }
+  }
 }
 
 ######
@@ -304,6 +323,41 @@ resource "aws_ecs_cluster" "burgerworld-hello-ecs-ecs-cluster" {
     Name        = "${var.burgerworld_hello_ecs_app_name}-ecs-cluster"
     Environment = var.burgerworld_hello_ecs_deployment_environment
   }
+}
+
+resource "aws_ecs_task_definition" "burgerworld-hello-ecs-task-definition" {
+  container_definitions    = data.template_file.burgerworld-hello-ecs-task-definition-json.rendered
+  family                   = "burgerworld-hello-ecs"
+  network_mode             = "awsvpc"
+  memory                   = "128"
+  cpu                      = "256"
+  requires_compatibilities = ["EC2"]
+}
+
+data "template_file" "burgerworld-hello-ecs-task-definition-json" {
+  template = file("${path.module}/task-definition.json")
+}
+
+resource "aws_ecs_service" "burgerworld-hello-ecs-service" {
+  cluster         = aws_ecs_cluster.burgerworld-hello-ecs-ecs-cluster.id
+  desired_count   = 1
+  launch_type     = "EC2"
+  name            = "burgerworld-hello-ecs"
+  task_definition = aws_ecs_task_definition.burgerworld-hello-ecs-task-definition.arn
+
+  load_balancer {
+    container_name   = "burgerworld-hello-ecs"
+    container_port   = "1337"
+    target_group_arn = aws_lb_target_group.burgerworld-hello-ecs-lb-target-group.arn
+  }
+
+  network_configuration {
+    security_groups  = [aws_security_group.ecs-sg.id]
+    subnets          = var.burgerworld-hello-ecs-alb-subnets
+    assign_public_ip = "false"
+  }
+
+  depends_on = [aws_lb_listener.burgerworld-hello-ecs-alb-listener]
 }
 
 #######
