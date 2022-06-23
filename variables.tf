@@ -63,3 +63,27 @@ variable "burgerworld_hello_ecs_vpc_id" {
   type        = string
   default     = "vpc-ff04929b"
 }
+
+variable "burgerworld-hello-ecs-ecs-cluster-container-insights-enabled" {
+  description = "enable ecs container insights"
+  type        = string
+  default     = "true"
+}
+
+variable "burgerworld-hello-ecs-autoscaling-group-vpc-zone-identifier" {
+  description = "list of private subnets to launch instances in"
+  type        = list(any)
+  default     = ["subnet-070e5fb1f79ff9ec3", "subnet-0acccb37fbb30454d"]
+}
+
+variable "burgerworld-hello-ecs-alb-subnets" {
+  description = "list of private subnets to attach to alb"
+  type        = list(any)
+  default     = ["subnet-070e5fb1f79ff9ec3", "subnet-0acccb37fbb30454d"]
+}
+
+variable "burgerworld-hello-ecs-loadbalancer-type" {
+  description = "type of load balancer to launch"
+  type        = string
+  default     = "application"
+}
