@@ -344,5 +344,5 @@ resource "aws_lb_listener" "burgerworld-hello-ecs-alb-listener" {
 
   load_balancer_arn = aws_lb.burgerworld-hello-ecs-loadbalancer.arn
   port              = "1337"
-  protocol          = "TCP"
+  protocol          = "HTTP" # tfsec:ignore:aws-elb-http-not-used
 }
