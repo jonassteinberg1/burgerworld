@@ -329,8 +329,8 @@ resource "aws_ecs_task_definition" "burgerworld-hello-ecs-task-definition" {
   container_definitions    = data.template_file.burgerworld-hello-ecs-task-definition-json.rendered
   family                   = "burgerworld-hello-ecs"
   network_mode             = "awsvpc"
-  memory                   = "256"
-  cpu                      = "256"
+  memory                   = "1024"
+  cpu                      = "1024"
   requires_compatibilities = ["EC2"]
 }
 
