@@ -405,3 +405,19 @@ resource "aws_lb_listener" "burgerworld-hello-ecs-alb-listener" {
   port              = "80"
   protocol          = "HTTP" # tfsec:ignore:aws-elb-http-not-used
 }
+
+#######
+# R53 #
+#######
+
+resource "aws_route53_record" "burgerworld-hello-ecs-r53-alb-alias" {
+  zone_id = "Z6I72JN6BD9F3"
+  name    = "burgerworld-hello-ecs"
+  type    = "A"
+
+  alias {
+    name                   = aws_lb.burgerworld-hello-ecs-loadbalancer.dns_name
+    zone_id                = aws_lb.burgerworld-hello-ecs-loadbalancer.zone_id
+    evaluate_target_health = false
+  }
+}
