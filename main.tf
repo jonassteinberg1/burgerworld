@@ -388,6 +388,10 @@ resource "aws_lb_target_group" "burgerworld-hello-ecs-lb-target-group" {
     path                = "/"
     unhealthy_threshold = "3"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_lb_listener" "burgerworld-hello-ecs-alb-listener" {
