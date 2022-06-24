@@ -342,11 +342,11 @@ resource "aws_ecs_service" "burgerworld-hello-ecs-service" {
   cluster         = aws_ecs_cluster.burgerworld-hello-ecs-ecs-cluster.id
   desired_count   = 1
   launch_type     = "EC2"
-  name            = "burgerworld-hello-ecs"
+  name            = "burgerworld-hello-ecs-nginx"
   task_definition = aws_ecs_task_definition.burgerworld-hello-ecs-task-definition.arn
 
   load_balancer {
-    container_name   = "burgerworld-hello-ecs"
+    container_name   = "burgerworld-hello-ecs-nginx"
     container_port   = "80"
     target_group_arn = aws_lb_target_group.burgerworld-hello-ecs-lb-target-group.arn
   }
