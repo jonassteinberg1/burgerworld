@@ -3,7 +3,7 @@
       "name": "burgerworld-hello-ecs-nginx",
       "image": "379683964026.dkr.ecr.us-east-1.amazonaws.com/burgerworld-hello-ecs-nginx:1.0.0",
       "cpu": 256,
-      "memory": 512,
+      "memory": 256,
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -31,7 +31,7 @@
       "name": "burgerworld-hello-ecs-web",
       "image": "379683964026.dkr.ecr.us-east-1.amazonaws.com/burgerworld-hello-ecs-web:1.0.2",
       "cpu": 256,
-      "memory": 512,
+      "memory": 256,
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -58,7 +58,7 @@
       "name": "burgerworld-hello-ecs-integration-test",
       "image": "379683964026.dkr.ecr.us-east-1.amazonaws.com/burgerworld-hello-ecs-integration-test-prod:1.0.0",
       "cpu": 256,
-      "memory": 512,
+      "memory": 256,
       "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
