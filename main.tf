@@ -257,8 +257,8 @@ resource "aws_security_group" "ecs-sg" {
 
   ingress {
     description = "nginx public port"
-    from_port   = 1337
-    to_port     = 1337
+    from_port   = 80
+    to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["72.50.221.50/32"]
   }
@@ -347,7 +347,7 @@ resource "aws_ecs_service" "burgerworld-hello-ecs-service" {
 
   load_balancer {
     container_name   = "burgerworld-hello-ecs"
-    container_port   = "1337"
+    container_port   = "80"
     target_group_arn = aws_lb_target_group.burgerworld-hello-ecs-lb-target-group.arn
   }
 
@@ -375,7 +375,7 @@ resource "aws_lb" "burgerworld-hello-ecs-loadbalancer" {
 
 resource "aws_lb_target_group" "burgerworld-hello-ecs-lb-target-group" {
   name        = "burgerworld-hello-ecs"
-  port        = "1337"
+  port        = "80"
   protocol    = "HTTP"
   vpc_id      = "vpc-ff04929b"
   target_type = "ip"
@@ -383,7 +383,7 @@ resource "aws_lb_target_group" "burgerworld-hello-ecs-lb-target-group" {
   health_check {
     healthy_threshold   = "3"
     interval            = "10"
-    port                = "1337"
+    port                = "80"
     protocol            = "HTTP"
     path                = "/"
     unhealthy_threshold = "3"
@@ -398,6 +398,6 @@ resource "aws_lb_listener" "burgerworld-hello-ecs-alb-listener" {
   }
 
   load_balancer_arn = aws_lb.burgerworld-hello-ecs-loadbalancer.arn
-  port              = "1337"
+  port              = "80"
   protocol          = "HTTP" # tfsec:ignore:aws-elb-http-not-used
 }
