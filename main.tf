@@ -260,7 +260,7 @@ resource "aws_security_group" "ecs-sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["72.50.221.50/32"]
+    cidr_blocks = ["73.38.91.107/32"]
   }
 
   egress {
@@ -268,7 +268,7 @@ resource "aws_security_group" "ecs-sg" {
     from_port   = 0
     to_port     = 65535
     protocol    = "tcp"
-    cidr_blocks = ["72.50.221.50/32", "172.31.0.0/16"]
+    cidr_blocks = ["73.38.91.107/32", "172.31.0.0/16"]
   }
 }
 
