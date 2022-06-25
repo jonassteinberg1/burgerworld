@@ -278,6 +278,7 @@ data "aws_iam_policy_document" "burgerworld-hello-ecs-ssm-admin-permissions-poli
       "ec2messages:GetMessages",
       "ec2messages:SendReply"
     ]
+    resources = ["arn:${data.aws_partition.current.partition}:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*"]
   }
 }
 
