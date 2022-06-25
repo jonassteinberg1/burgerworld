@@ -256,7 +256,10 @@ data "aws_iam_policy_document" "burgerworld-hello-ecs-ssm-admin-permissions-poli
       "ssm:ResumeSession",
       "ssm:TerminateSession",
       "ssm:StartSession",
+      "ssm:SendCommand",
       "ssm:DescribeSessions",
+      "ssm:DescribeInstanceInformation",
+      "ssm:DescribeInstanceProperties",
       "ssm:GetConnectionStatus",
       "ssm:DescribeAssociation",
       "ssm:GetDeployablePatchSnapshotForInstance",
@@ -284,7 +287,10 @@ data "aws_iam_policy_document" "burgerworld-hello-ecs-ssm-admin-permissions-poli
       "ec2messages:GetMessages",
       "ec2messages:SendReply"
     ]
-    resources = ["arn:${data.aws_partition.current.partition}:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*"]
+    resources = [
+      "arn:${data.aws_partition.current.partition}:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*",
+      "arn:${data.aws_partition.current.partition}:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:document/SSM-SessionManagerRunShell"
+    ]
   }
 }
 
