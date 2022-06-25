@@ -328,7 +328,7 @@ resource "aws_security_group" "ecs-sg" {
 # ASG #
 #######
 resource "aws_launch_configuration" "burgerworld-hello-ecs-launch-configuration" {
-  image_id             = "ami-0f863d7367abe5d6f"
+  image_id             = "ami-06634c1b99d35f2c7"
   iam_instance_profile = aws_iam_instance_profile.ecs-agent.name
   security_groups      = [aws_security_group.ecs-sg.id]
   user_data            = "#!/bin/bash\necho ECS_CLUSTER=burgerworld-hell-ecs-ecs-cluster >> /etc/ecs/ecs.config"
