@@ -249,7 +249,7 @@ data "aws_iam_policy_document" "burgerworld-hello-ecs-service-policy" {
 
 data "aws_iam_policy_document" "burgerworld-hello-ecs-ssm-admin-permissions-policy-document" {
   statement {
-    sid    = "burgerworld-hello-ecs-ssm-admin-permissions-policy"
+    sid    = "burgerworldHelloEcsSsmAdminPermissionsPolicy"
     effect = "Allow"
     principals {
       type        = "AWS"
