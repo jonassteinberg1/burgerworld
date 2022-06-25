@@ -289,7 +289,7 @@ resource "aws_launch_configuration" "burgerworld-hello-ecs-launch-configuration"
   image_id             = "ami-06634c1b99d35f2c7"
   iam_instance_profile = aws_iam_instance_profile.ecs-agent.name
   security_groups      = [aws_security_group.ecs-sg.id]
-  user_data            = "#!/bin/bash\necho ECS_CLUSTER=burgerworld-hell-ecs-ecs-cluster >> /etc/ecs/ecs.config"
+  user_data            = "#!/bin/bash\necho ECS_CLUSTER=burgerworld-hello-ecs-cluster >> /etc/ecs/ecs.config"
   instance_type        = "t2.micro"
 
   root_block_device {
