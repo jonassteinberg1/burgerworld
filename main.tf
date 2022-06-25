@@ -290,7 +290,7 @@ resource "aws_launch_configuration" "burgerworld-hello-ecs-launch-configuration"
   iam_instance_profile = aws_iam_instance_profile.ecs-agent.name
   security_groups      = [aws_security_group.ecs-sg.id]
   user_data            = "#!/bin/bash\necho ECS_CLUSTER=burgerworld-hello-ecs-cluster >> /etc/ecs/ecs.config"
-  instance_type        = "t2.micro"
+  instance_type        = "t3a.xlarge"
 
   root_block_device {
     volume_type           = "standard"
