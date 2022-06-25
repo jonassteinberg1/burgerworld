@@ -79,7 +79,7 @@ variable "burgerworld-hello-ecs-autoscaling-group-vpc-zone-identifier" {
 variable "burgerworld-hello-ecs-alb-subnets" {
   description = "list of private subnets to attach to alb"
   type        = list(any)
-  default     = ["subnet-070e5fb1f79ff9ec3", "subnet-0acccb37fbb30454d"]
+  default     = ["subnet-081d7e0ab60d1769a", "subnet-0f108e8ce09836d7c"]
 }
 
 variable "burgerworld-hello-ecs-loadbalancer-type" {
