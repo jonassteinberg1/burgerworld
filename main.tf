@@ -247,62 +247,14 @@ data "aws_iam_policy_document" "burgerworld-hello-ecs-service-policy" {
   }
 }
 
-data "aws_iam_policy_document" "burgerworld-hello-ecs-ssm-admin-permissions-policy-document" {
-  statement {
-    sid    = "burgerworldHelloEcsSsmAdminPermissionsPolicy"
-    effect = "Allow"
-    actions = [
-      "ec2:DescribeInstances",
-      "ssm:ResumeSession",
-      "ssm:TerminateSession",
-      "ssm:StartSession",
-      "ssm:SendCommand",
-      "ssm:DescribeSessions",
-      "ssm:DescribeInstanceInformation",
-      "ssm:DescribeInstanceProperties",
-      "ssm:GetConnectionStatus",
-      "ssm:DescribeAssociation",
-      "ssm:GetDeployablePatchSnapshotForInstance",
-      "ssm:GetDocument",
-      "ssm:DescribeDocument",
-      "ssm:GetManifest",
-      "ssm:GetParameter",
-      "ssm:GetParameters",
-      "ssm:ListAssociations",
-      "ssm:ListInstanceAssociations",
-      "ssm:PutInventory",
-      "ssm:PutComplianceItems",
-      "ssm:PutConfigurePackageResult",
-      "ssm:UpdateAssociationStatus",
-      "ssm:UpdateInstanceAssociationStatus",
-      "ssm:UpdateInstanceInformation",
-      "ssmmessages:CreateControlChannel",
-      "ssmmessages:CreateDataChannel",
-      "ssmmessages:OpenControlChannel",
-      "ssmmessages:OpenDataChannel",
-      "ec2messages:AcknowledgeMessage",
-      "ec2messages:DeleteMessage",
-      "ec2messages:FailMessage",
-      "ec2messages:GetEndpoint",
-      "ec2messages:GetMessages",
-      "ec2messages:SendReply"
-    ]
-    resources = [
-      "arn:${data.aws_partition.current.partition}:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:instance/*",
-      "arn:${data.aws_partition.current.partition}:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:document/SSM-SessionManagerRunShell"
-    ]
-  }
-}
-
-resource "aws_iam_policy" "burgerworld-hello-ecs-ssm-admin-permissions-policy" {
-  name   = "burgerworld-hello-ecs-ssm-admin-permissions-policy"
-  path   = "/"
-  policy = data.aws_iam_policy_document.burgerworld-hello-ecs-ssm-admin-permissions-policy-document.json
-}
-
-resource "aws_iam_role_policy_attachment" "burgerworld-hello-ecs-ssm-admin-permissions-policy-attachment" {
+resource "aws_iam_role_policy_attachment" "burgerworld-hello-ecs-ssm-ec2-permissions-policy-attachment" {
   role       = aws_iam_role.ecs-agent.name
-  policy_arn = aws_iam_policy.burgerworld-hello-ecs-ssm-admin-permissions-policy.arn
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+}
+
+resource "aws_iam_role_policy_attachment" "burgerworld-hello-ecs-ssm-core-permissions-policy-attachment" {
+  role       = aws_iam_role.ecs-agent.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 ######
