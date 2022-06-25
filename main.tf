@@ -252,6 +252,12 @@ data "aws_iam_policy_document" "burgerworld-hello-ecs-ssm-admin-permissions-poli
     sid    = "burgerworldHelloEcsSsmAdminPermissionsPolicy"
     effect = "Allow"
     actions = [
+      "ec2:DescribeInstances",
+      "ssm:ResumeSession",
+      "ssm:TerminateSession",
+      "ssm:StartSession",
+      "ssm:DescribeSessions",
+      "ssm:GetConnectionStatus",
       "ssm:DescribeAssociation",
       "ssm:GetDeployablePatchSnapshotForInstance",
       "ssm:GetDocument",
