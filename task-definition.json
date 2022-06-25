@@ -56,7 +56,7 @@
   },
   {
       "name": "burgerworld-hello-ecs-integration-test",
-      "image": "379683964026.dkr.ecr.us-east-1.amazonaws.com/burgerworld-hello-ecs-integration-test-prod:1.0.0",
+      "image": "379683964026.dkr.ecr.us-east-1.amazonaws.com/burgerworld-hello-ecs-integration-test:1.0.0",
       "cpu": 256,
       "memory": 256,
       "logConfiguration": {
