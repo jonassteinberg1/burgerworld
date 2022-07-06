@@ -22,7 +22,7 @@ No providers.
 
 ## Resources
 
-No resources. Not true.
+No resources.
 
 ## Inputs
 
