@@ -1,3 +1,5 @@
+# dummy comment
+
 terraform {
   cloud {
     organization = "jonassteinberg"
